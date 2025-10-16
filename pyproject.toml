@@ -4,7 +4,11 @@ version = "0.1.0"
 description = "Visualization for mortality related to opioid overdose in the US"
 readme = "README.org"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "dash>=3.2.0",
+    "plotly[express]>=6.3.1",
+    "polars>=1.34.0",
+]
 
 [dependency-groups]
 dev = [
