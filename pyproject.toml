@@ -1,0 +1,23 @@
+[project]
+name = "opioid-crisis-visualization"
+version = "0.1.0"
+description = "Visualization for mortality related to opioid overdose in the US"
+readme = "README.org"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    {include-group = "lint"},
+    {include-group = "test"}
+]
+lint = [
+    "pylsp-mypy>=0.7.0",
+    "pylsp-rope>=0.1.17",
+    "python-lsp-ruff>=2.3.0",
+    "python-lsp-server>=1.13.1",
+    "ruff>=0.14.0",
+]
+test = [
+    "pytest>=8.4.2",
+]
