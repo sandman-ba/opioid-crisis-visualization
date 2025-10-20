@@ -1,0 +1,18 @@
+#+title: Visualization and Statistical Analysis of the Opioid Crisis
+#+author: Bernardo Ameneyro
+
+This is a web application powered by [[https://plotly.com/][Plotly]] and [[https://dash.plotly.com/][Dash]] for data visualization related to the opioid crisis in the US.
+
+* Data Sources
+
+** Opioid Related Mortality
+
+I use the opioid related mortality data from [[https://doi.org/10.48550/arXiv.2412.15218][Deas et al. 2024]].
+This dataset was obtained from [[https://wonder.cdc.gov/][CDC WONDER]], more details can be found in the paper and on the [[https://wonder.cdc.gov/wonder/help/mcd-expanded.html][CDC Website]].
+
+
+* References
+
+#+begin_quote
+Deas, Andrew, Adam Spannaus, Dakotah D. Maguire, Jodie Trafton, Anuj J. Kapadia, and Vasileios Maroulas. "Investigating the importance of social vulnerability in opioid-related mortality across the United States." arXiv preprint [[https://doi.org/10.48550/arXiv.2412.15218][arXiv:2412.15218]] (2024).
+#+end_quote
