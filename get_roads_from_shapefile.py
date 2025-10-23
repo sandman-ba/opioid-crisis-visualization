@@ -25,5 +25,23 @@ def main() -> None:
     })
     roads_for_plotly.sink_parquet("Data/tl_2021_us_primaryroads.parquet")
 
+    interstate_lats: list[float] = []
+    interstate_lons: list[float] = []
+    interstate_names: list[str] = []
+
+    for interstate_name, _, interstate_lat, interstate_lon in roads_for_plotly.filter(pl.col("type") == "I").collect().iter_rows():
+        interstate_lats += interstate_lat + [None]
+        interstate_lons += interstate_lon + [None]
+        interstate_names += [interstate_name]*len(interstate_lat) + [None]
+
+    interstates: pl.LazyFrame = pl.LazyFrame({
+        "name": interstate_names,
+        "lat": interstate_lats,
+        "lon": interstate_lons
+    })
+
+    interstates.sink_parquet("Data/tl_2021_us_interstates.parquet")
+
+
 if __name__ == "__main__":
     main()

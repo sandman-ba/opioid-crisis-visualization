@@ -1,39 +1,28 @@
-import json
 import polars as pl
-import plotly.express as px
 import plotly.graph_objects as go
+from json import load as jsonload
+from flask import Flask
 from typing import Any
 from dash import Dash, html, dcc, callback, Output, Input, ctx, Patch
 from DataProcessing import get_column_names, int_to_column_name
 
 with open("Data/cb_2022_us_county_20m.geojson") as counties_file:
-    counties: Any = json.load(counties_file)
+    counties: Any = jsonload(counties_file)
 
-roads: pl.LazyFrame = pl.scan_parquet("Data/tl_2021_us_primaryroads.parquet")
-
-interstate_lats: list[float] = []
-interstate_lons: list[float] = []
-interstate_names: list[str] = []
-
-for interstate_name, _, interstate_lat, interstate_lon in roads.filter(pl.col("type") == "I").collect().iter_rows():
-    interstate_lats += interstate_lat + [None]
-    interstate_lons += interstate_lon + [None]
-    interstate_names += [interstate_name]*len(interstate_lat) + [None]
-
-interstates: pl.LazyFrame = pl.LazyFrame({
-    "name": interstate_names,
-    "lat": interstate_lats,
-    "lon": interstate_lons
-})
-
+interstates: pl.LazyFrame = pl.scan_parquet("Data/tl_2021_us_interstates.parquet")
 mortality_rates_df: pl.LazyFrame = pl.scan_csv("Data/mortality_rates.csv", with_column_names=get_column_names)
+min_year: int = 2010
+max_year: int = 2022
+default_year: int = 2017
+default_column_name: str = int_to_column_name(default_year)
+
 mortality_figure: go.Figure = go.Figure()
 mortality_figure.add_trace(
     go.Choropleth(
         geojson = counties,
         featureidkey = "properties.GEOID",
         locations = mortality_rates_df.select("fips").collect()["fips"],
-        z = mortality_rates_df.select(int_to_column_name(2017)).collect()[int_to_column_name(2017)],
+        z = mortality_rates_df.select(default_column_name).collect()[default_column_name],
         colorscale = "bluered",
         colorbar_title = "Mortality Rate",
         name = "Mortality"
@@ -67,7 +56,8 @@ def update_interstates(button_state: int) -> go.Figure:
     return interstates_patch
 
 
-app = Dash(__name__)
+server = Flask("opioid-crisis-visualization")
+app = Dash(server=server)
 app.layout = [
     html.H1(children="Opioid Related Mortality in the US", style={"textAlign": "center"}),
     html.Aside([
@@ -75,7 +65,7 @@ app.layout = [
     ]),
     html.Figure([
         html.P("Select a year:"),
-        dcc.Slider(min=2010, max=2022, step=1, value=2017, marks={i: f"{i}" for i in range(2010,2023)}, id="select-year"),
+        dcc.Slider(min=min_year, max=max_year, step=1, value=default_year, marks={i: f"{i}" for i in range(min_year,max_year + 1)}, id="select-year"),
         dcc.Graph(id="mortality-graph", style={"height": 1000}, figure=mortality_figure)
     ])
 ]

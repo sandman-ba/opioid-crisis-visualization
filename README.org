@@ -3,6 +3,20 @@
 
 This is a web application powered by [[https://plotly.com/][Plotly]] and [[https://dash.plotly.com/][Dash]] for data visualization related to the opioid crisis in the US.
 
+* Install and Run
+
+Install Docker for your system if you don't already have it.
+Clone this repo to your machine and ~cd~ into its directory.
+Then run
+
+#+begin_src code
+
+  docker compose up --watch
+
+#+end_src
+
+Navigate to ~[[http://localhost:8000][http://localhost:8000]]~ on your browser to see the app.
+
 * Data Sources
 
 ** Opioid Related Mortality
